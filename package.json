@@ -1,9 +1,18 @@
 {
-  "name": "grunt-ember-initer",
-  "version": "0.0.0",
+  "name": "grunt-ember-express-starter",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
+  },
+  "author": {
+    "name": "Lucas Holmquist",
+    "email": "lucas.holmquist@gmail.com"
+  },
+  "license": "BSD",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:lholmquist/grunt-ember-express-starter.git"
   },
   "dependencies": {
     "body-parser": "~1.12.0",
