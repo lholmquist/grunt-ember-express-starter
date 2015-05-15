@@ -11,13 +11,13 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         watch: {
             livereload: {
-                files: ['client-app/dist/*.js', 'client-app/dist/*.css']
-            },
-            options: {
-                livereload: true
+                files: ['client-app/dist/assets/*.js', 'client-app/dist/assets/*.css'],
+                options: {
+                    livereload: true
+                },
             },
             express: {
-                files: ['bin/*', 'app.js', 'server/**/*.js'],
+                files: ['bin/*', './app.js', 'server/**/*.js'],
                 tasks: ['express:dev'],
                 options: {
                     nospawn: true
@@ -26,11 +26,14 @@ module.exports = function (grunt) {
         },
         express: {
             options: {
-                script: 'bin/www',
-                output: 'Server Started'
+                script: './bin/www',
+                output: 'Server is Running',
+                delay: 1
             },
             dev: {
-                options: {}
+                options: {
+                    debug: 'my-application'
+                }
             }
         },
         bgShell: {
@@ -47,14 +50,38 @@ module.exports = function (grunt) {
                     grunt.log.error('Ember-cli::'.red + error.red);
                 }
             }
+        },
+        shell: {
+            ember: {
+                command: function (mode) {
+                    switch (mode) {
+                        case 'init':
+                            return 'npm install';
+                        case 'dev':
+                            return emberPath + ' build';
+                    }
+                },
+                options: {
+                    execOptions: {
+                        cwd: path.resolve(cwd + '/client-app/'),
+                        stdout: false
+                    }
+                }
+            },
+            bower: {
+                command: path.resolve(cwd + '/node_modules/.bin/bower --allow-root install'),
+                options: {
+                    stdout: true,
+                    stdin: false
+                }
+            }
         }
     });
 
+    grunt.registerTask('init', 'Prepare for dev', ['shell:ember:init', 'shell:bower', 'default']);
 
     grunt.registerTask('dev', 'Dev Mode; watch files and restart server on changes',
            ['bgShell:ember', 'express:dev', 'watch']);
 
-    grunt.registerTask('default', 'Log Output', function () {
-        grunt.log.write('Default Task');
-    });
+    grunt.registerTask('default', 'just building off ember', ['shell:ember:dev']);
 };
